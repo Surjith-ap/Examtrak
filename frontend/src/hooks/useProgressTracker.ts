@@ -47,7 +47,8 @@ export const useProgressTracker = () => {
   const updateProgress = async (
     topicId: string,
     topicName: string,
-    completionPercentage: number
+    completionPercentage: number,
+    completedItems: string[] = []
   ) => {
     if (!user?.id) return false
 
@@ -55,7 +56,8 @@ export const useProgressTracker = () => {
       user.id,
       topicId,
       topicName,
-      completionPercentage
+      completionPercentage,
+      completedItems
     )
 
     if (success) {

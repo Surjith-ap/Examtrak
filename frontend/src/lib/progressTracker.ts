@@ -20,30 +20,52 @@ export const updateTopicProgress = async (
   userId: string,
   topicId: string,
   topicName: string,
-  completionPercentage: number
+  completionPercentage: number,
+  completedItems: string[] = []
 ): Promise<boolean> => {
-  const now = new Date().toISOString()
-  
-  const { data, error } = await supabase
-    .from('user_progress')
-    .upsert({
-      user_id: userId,
-      topic_id: topicId,
-      topic_name: topicName,
-      completion_percentage: completionPercentage,
-      last_accessed: now,
-      completed_at: completionPercentage >= 100 ? now : null,
-      updated_at: now
-    }, {
-      onConflict: 'user_id,topic_id'
-    })
+  try {
+    console.log('🔄 Saving progress:', {
+      userId,
+      topicId,
+      topicName,
+      completionPercentage,
+      completedItems: completedItems.length
+    });
 
-  if (error) {
-    console.error('Error updating topic progress:', error)
+    const now = new Date().toISOString()
+    
+    const { data, error } = await supabase
+      .from('user_progress')
+      .upsert({
+        user_id: userId,
+        topic_id: topicId,
+        topic_name: topicName,
+        completion_percentage: completionPercentage,
+        completed_items: completedItems,
+        last_accessed: now,
+        completed_at: completionPercentage >= 100 ? now : null,
+        updated_at: now
+      }, {
+        onConflict: 'user_id,topic_id'
+      })
+
+    if (error) {
+      console.error('❌ Supabase error:', error);
+      console.error('Error details:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code
+      });
+      return false
+    }
+
+    console.log('✅ Progress saved successfully:', data);
+    return true
+  } catch (error) {
+    console.error('❌ Unexpected error in updateTopicProgress:', error);
     return false
   }
-
-  return true
 }
 
 export const markTopicCompleted = async (

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
+import { ToastProvider } from '@/components/Toast'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -20,7 +21,9 @@ export default function RootLayout({
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         </head>
         <body className="antialiased">
-          {children}
+          <ToastProvider>
+            {children}
+          </ToastProvider>
         </body>
       </html>
     </ClerkProvider>

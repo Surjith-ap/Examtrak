@@ -1,13 +1,19 @@
 -- Enable RLS (Row Level Security)
 -- This ensures users can only access their own data
 
+-- Drop existing tables if they exist (to ensure clean setup)
+DROP TABLE IF EXISTS user_progress CASCADE;
+DROP TABLE IF EXISTS study_sessions CASCADE;
+DROP TABLE IF EXISTS user_stats CASCADE;
+
 -- Create user_progress table
-CREATE TABLE IF NOT EXISTS user_progress (
+CREATE TABLE user_progress (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     user_id TEXT NOT NULL,
     topic_id TEXT NOT NULL,
     topic_name TEXT NOT NULL,
     completion_percentage INTEGER DEFAULT 0 CHECK (completion_percentage >= 0 AND completion_percentage <= 100),
+    completed_items JSONB DEFAULT '[]'::jsonb, -- Store individual checkbox states
     last_accessed TIMESTAMPTZ DEFAULT NOW(),
     completed_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -16,7 +22,7 @@ CREATE TABLE IF NOT EXISTS user_progress (
 );
 
 -- Create study_sessions table
-CREATE TABLE IF NOT EXISTS study_sessions (
+CREATE TABLE study_sessions (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     user_id TEXT NOT NULL,
     topic_id TEXT NOT NULL,
@@ -29,7 +35,7 @@ CREATE TABLE IF NOT EXISTS study_sessions (
 );
 
 -- Create user_stats table
-CREATE TABLE IF NOT EXISTS user_stats (
+CREATE TABLE user_stats (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     user_id TEXT NOT NULL UNIQUE,
     total_study_time INTEGER DEFAULT 0, -- in minutes
@@ -43,12 +49,25 @@ CREATE TABLE IF NOT EXISTS user_stats (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Enable Row Level Security
-ALTER TABLE user_progress ENABLE ROW LEVEL SECURITY;
-ALTER TABLE study_sessions ENABLE ROW LEVEL SECURITY;
-ALTER TABLE user_stats ENABLE ROW LEVEL SECURITY;
+-- Disable Row Level Security for Clerk integration
+-- Clerk handles authentication and user isolation at the application level
+ALTER TABLE user_progress DISABLE ROW LEVEL SECURITY;
+ALTER TABLE study_sessions DISABLE ROW LEVEL SECURITY;
+ALTER TABLE user_stats DISABLE ROW LEVEL SECURITY;
 
--- Create policies for user_progress
+-- For Clerk authentication, we'll temporarily disable RLS and handle security in the app
+-- Alternatively, you can set up custom RLS policies with Clerk JWT tokens
+
+-- Disable RLS for now since we're using Clerk (not Supabase Auth)
+ALTER TABLE user_progress DISABLE ROW LEVEL SECURITY;
+ALTER TABLE study_sessions DISABLE ROW LEVEL SECURITY;
+ALTER TABLE user_stats DISABLE ROW LEVEL SECURITY;
+
+-- Note: In production, you should implement proper RLS with Clerk JWT validation
+-- For now, the application will handle user isolation through Clerk user IDs
+
+-- Create policies for user_progress (commented out for Clerk integration)
+/*
 CREATE POLICY "Users can view their own progress" ON user_progress
     FOR SELECT USING (auth.uid()::text = user_id);
 
@@ -86,6 +105,7 @@ CREATE POLICY "Users can update their own stats" ON user_stats
 
 CREATE POLICY "Users can delete their own stats" ON user_stats
     FOR DELETE USING (auth.uid()::text = user_id);
+*/
 
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_user_progress_user_id ON user_progress(user_id);
