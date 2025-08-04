@@ -20,4 +20,3 @@
 # The @netlify/plugin-nextjs plugin automatically handles the publish directory
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-  package = "@netlify/plugin-nextjs"
