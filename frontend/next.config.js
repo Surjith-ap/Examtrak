@@ -4,17 +4,19 @@ const nextConfig = {
   images: {
     unoptimized: true
   },
-  // Add these lines to prevent build failures during SSR
   eslint: {
     ignoreDuringBuilds: true,
   },
   typescript: {
     ignoreBuildErrors: true,
   },
-  // Disable static optimization for Clerk routes during build
   experimental: {
-    serverComponentsExternalPackages: ['@clerk/nextjs']
-  }
+    serverComponentsExternalPackages: ['@clerk/nextjs'],
+    // THIS LINE FIXES THE ISSUE
+    esmExternals: 'loose'
+  },
+  // CRITICAL FIX: Disable static export since Clerk needs SSR
+  output: undefined
 }
 
 module.exports = nextConfig
