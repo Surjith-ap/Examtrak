@@ -17,5 +17,7 @@
   NEXT_PUBLIC_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlaGhzdWJkdWtidGpoenJiaWNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQyODg5NDksImV4cCI6MjA2OTg2NDk0OX0.O-jKbJZvRKb1PWTYpA84JcVYqsNiq8axy7ZFOm6r074"
 
 # Essential for Next.js App Router with Clerk
+# The @netlify/plugin-nextjs plugin automatically handles the publish directory
 [[plugins]]
+  package = "@netlify/plugin-nextjs"
   package = "@netlify/plugin-nextjs"
