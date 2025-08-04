@@ -1,0 +1,10 @@
+[build]
+  base = "frontend"
+  command = "npm run build"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+# Essential for Next.js App Router with Clerk
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
