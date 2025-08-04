@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co'
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder'
 
 // Debug logging for environment variables
 console.log('🔧 Supabase Config:', {
@@ -11,7 +11,7 @@ console.log('🔧 Supabase Config:', {
   keyPrefix: supabaseAnonKey ? supabaseAnonKey.substring(0, 20) + '...' : 'Missing'
 });
 
-if (!supabaseUrl || !supabaseAnonKey) {
+if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
   console.error('❌ Missing Supabase environment variables!');
   console.error('Please check your .env.local file');
 }
