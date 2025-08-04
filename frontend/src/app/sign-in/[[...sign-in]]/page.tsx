@@ -1,5 +1,10 @@
 import { SignIn } from '@clerk/nextjs'
 
+// Required for static export
+export async function generateStaticParams() {
+  return [{ 'sign-in': [] }]
+}
+
 export default function Page() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-warm-cream">

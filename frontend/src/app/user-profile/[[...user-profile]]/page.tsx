@@ -1,5 +1,10 @@
 import { UserProfile } from '@clerk/nextjs'
 
+// Required for static export
+export async function generateStaticParams() {
+  return [{ 'user-profile': [] }]
+}
+
 export default function UserProfilePage() {
   return (
     <div className="min-h-screen bg-warm-cream py-12">
