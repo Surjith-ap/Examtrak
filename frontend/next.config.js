@@ -13,13 +13,10 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ['@clerk/nextjs']
   },
-  // CRITICAL FIX: Completely disable static generation to prevent ClerkProvider SSR issues
-  output: 'standalone',
-  // Disable all static optimization during build
-  generateStaticParams: false,
-  // Skip build-time pre-rendering that's causing the useContext error
-  skipTrailingSlashRedirect: true,
-  skipMiddlewareUrlNormalize: true
+  // Try a different approach - disable problematic optimizations
+  swcMinify: false,
+  // Disable static generation that's causing issues
+  staticPageGenerationTimeout: 0
 }
 
 module.exports = nextConfig
