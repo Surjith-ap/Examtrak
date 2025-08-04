@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { SectionData, SubTopic } from '../types/syllabus';
+import { useProgressTracker } from '@/hooks/useProgressTracker';
 
 interface SyllabusSectionProps {
   section: SectionData;
@@ -15,9 +16,50 @@ function countTopics(topics: (string | SubTopic)[]): number {
 
 export default function SyllabusSection({ section }: SyllabusSectionProps) {
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
+  const { 
+    updateProgress, 
+    getTopicProgress, 
+    isUserLoggedIn, 
+    completeTopicHandler 
+  } = useProgressTracker();
+  
   const totalTopics = countTopics(section.topics);
 
-  const handleCheckboxChange = (topicId: string) => {
+  // Load saved progress when component mounts
+  useEffect(() => {
+    if (isUserLoggedIn) {
+      const savedProgress = getTopicProgress(section.id);
+      if (savedProgress) {
+        // Calculate which items should be checked based on completion percentage
+        const itemsToCheck = Math.round((savedProgress.completion_percentage / 100) * totalTopics);
+        const newCheckedItems = new Set<string>();
+        
+        // This is a simplified approach - in a real app, you'd want to store individual item states
+        let count = 0;
+        section.topics.forEach((topic, index) => {
+          const topicId = `${section.id}-topic-${index}`;
+          if (typeof topic === 'string') {
+            if (count < itemsToCheck) {
+              newCheckedItems.add(topicId);
+              count++;
+            }
+          } else {
+            topic.sub.forEach((_, subIndex) => {
+              const subTopicId = `${topicId}-${subIndex}`;
+              if (count < itemsToCheck) {
+                newCheckedItems.add(subTopicId);
+                count++;
+              }
+            });
+          }
+        });
+        
+        setCheckedItems(newCheckedItems);
+      }
+    }
+  }, [section.id, isUserLoggedIn, getTopicProgress, totalTopics, section.topics]);
+
+  const handleCheckboxChange = async (topicId: string) => {
     const newCheckedItems = new Set(checkedItems);
     if (newCheckedItems.has(topicId)) {
       newCheckedItems.delete(topicId);
@@ -25,6 +67,19 @@ export default function SyllabusSection({ section }: SyllabusSectionProps) {
       newCheckedItems.add(topicId);
     }
     setCheckedItems(newCheckedItems);
+
+    // Update progress in database if user is logged in
+    if (isUserLoggedIn) {
+      const newCheckedCount = newCheckedItems.size;
+      const newPercentage = totalTopics > 0 ? Math.round((newCheckedCount / totalTopics) * 100) : 0;
+      
+      await updateProgress(section.id, section.title, newPercentage);
+      
+      // If section is completed, mark it as completed
+      if (newPercentage >= 100) {
+        await completeTopicHandler(section.id, section.title);
+      }
+    }
   };
 
   const checkedCount = checkedItems.size;

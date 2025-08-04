@@ -1,9 +1,11 @@
 'use client';
 
 import { SignedIn, SignedOut } from '@clerk/nextjs';
+import { useState } from 'react';
 import Header from '../components/Header';
 import SyllabusChart from '../components/SyllabusChart';
 import SyllabusSection from '../components/SyllabusSection';
+import ProgressDashboard from '../components/ProgressDashboard';
 import { syllabusData } from '../data/syllabusData';
 
 function LandingPage() {
@@ -75,18 +77,57 @@ function LandingPage() {
 }
 
 function AuthenticatedApp() {
+  const [activeTab, setActiveTab] = useState<'syllabus' | 'progress'>('syllabus');
+
   return (
     <>
       <Header />
       
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-        <SyllabusChart />
-        
-        <div className="space-y-8">
-          {Object.values(syllabusData).map(section => (
-            <SyllabusSection key={section.id} section={section} />
-          ))}
+        {/* Navigation Tabs */}
+        <div className="flex space-x-1 bg-warm-bg-light rounded-lg p-1 mb-8 max-w-md mx-auto">
+          <button
+            onClick={() => setActiveTab('syllabus')}
+            className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              activeTab === 'syllabus'
+                ? 'bg-white text-warm-text shadow-sm'
+                : 'text-warm-text-light hover:text-warm-text'
+            }`}
+          >
+            📚 Syllabus
+          </button>
+          <button
+            onClick={() => setActiveTab('progress')}
+            className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              activeTab === 'progress'
+                ? 'bg-white text-warm-text shadow-sm'
+                : 'text-warm-text-light hover:text-warm-text'
+            }`}
+          >
+            📊 Progress
+          </button>
         </div>
+
+        {/* Content */}
+        {activeTab === 'syllabus' ? (
+          <>
+            <SyllabusChart />
+            
+            <div className="space-y-8">
+              {Object.values(syllabusData).map(section => (
+                <SyllabusSection key={section.id} section={section} />
+              ))}
+            </div>
+          </>
+        ) : (
+          <div>
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-bold text-warm-text mb-2">Your Progress Dashboard</h1>
+              <p className="text-warm-text-light">Track your study progress and achievements</p>
+            </div>
+            <ProgressDashboard />
+          </div>
+        )}
       </main>
 
       <footer className="bg-warm-bg-light mt-12 py-6">
