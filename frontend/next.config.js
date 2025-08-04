@@ -13,10 +13,16 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ['@clerk/nextjs']
   },
-  // Try a different approach - disable problematic optimizations
-  swcMinify: false,
-  // Disable static generation that's causing issues
-  staticPageGenerationTimeout: 0
+  // FINAL APPROACH: Force export mode to bypass static generation
+  output: 'export',
+  distDir: 'out',
+  // Disable all server-side features that cause ClerkProvider issues
+  trailingSlash: true,
+  images: {
+    unoptimized: true,
+    loader: 'custom',
+    loaderFile: './imageLoader.js'
+  }
 }
 
 module.exports = nextConfig
