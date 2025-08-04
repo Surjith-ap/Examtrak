@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #FDFBF7;
+  color: #3D352E;
+}
+
+.chart-container {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  height: 320px;
+  max-height: 400px;
+}
+
+@media (min-width: 768px) {
+  .chart-container {
+    height: 350px;
+  }
+}
+
+details > summary {
+  list-style: none;
+}
+
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+details[open] summary .arrow {
+  transform: rotate(90deg);
+}
+
+.progress-bar-fill {
+  transition: width 0.5s ease-in-out;
+}

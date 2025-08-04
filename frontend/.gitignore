@@ -1,0 +1,15 @@
+# Local frontend-specific ignores
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Local build artifacts
+.next/
+out/
+
+# Local dependencies
+node_modules/
+
+# TypeScript incremental builds
+*.tsbuildinfo
