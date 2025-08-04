@@ -8,42 +8,40 @@ The build is failing with: "Your publish directory cannot be the same as the bas
 - Publish directory: `frontend` (set via Netlify UI)
 - These cannot be the same when using the Next.js plugin
 
-## Solution
+## Solution Applied
+Since the Netlify UI setting overrides the config file, I've explicitly set the publish directory in `netlify.toml`:
 
-### Step 1: Clear Publish Directory in Netlify Dashboard
-1. Go to your Netlify site dashboard
+```toml
+[build]
+  base = "frontend"
+  publish = "frontend/.next"  # This overrides the UI setting
+  command = "npm install --legacy-peer-deps && npm run build"
+```
+
+## How This Works
+1. **Base directory**: `frontend` - where the source code is located
+2. **Publish directory**: `frontend/.next` - where Next.js builds the output
+3. **Next.js Plugin**: Still handles the deployment but respects the publish directory
+
+## Alternative Solutions
+If this approach doesn't work, you can also:
+
+### Option 1: Clear UI Setting (Manual)
+1. Go to Netlify site dashboard
 2. Navigate to **Site Settings** → **Build & Deploy** → **Build Settings**
-3. Under **Build Settings**:
-   - **Base directory**: Should be `frontend` ✅
-   - **Publish directory**: Should be **EMPTY** or **CLEAR THIS FIELD**
-   - **Build command**: Should be `npm install --legacy-peer-deps && npm run build` ✅
+3. Clear the **Publish directory** field completely
+4. Let the Next.js plugin handle it automatically
 
-### Step 2: Let the Next.js Plugin Handle Publishing
-The `@netlify/plugin-nextjs` plugin automatically:
-- Detects the correct output directory (`.next`)
-- Handles server-side rendering setup
-- Configures edge functions for middleware
-- Sets up proper redirects
-
-### Step 3: Expected Configuration
-After clearing the publish directory, your build settings should show:
-```
-Base directory: frontend
-Publish directory: (empty)
-Build command: npm install --legacy-peer-deps && npm run build
+### Option 2: Use Different Structure
+```toml
+[build]
+  base = "frontend"
+  publish = "frontend/out"  # For static export
 ```
 
-### Step 4: Verify Fix
-1. Clear the publish directory field in Netlify dashboard
-2. Trigger a new deploy
-3. The build should complete successfully
-
-## Alternative Solution
-If you prefer to set a specific publish directory:
-- Use `frontend/.next` as the publish directory
-- But this is NOT recommended with the Next.js plugin
-
-## Why This Happens
-- Netlify UI settings override `netlify.toml` file settings
-- The Next.js plugin expects to control the output directory
-- Base and publish directories must be different for security reasons
+## Expected Result
+With the current fix:
+- ✅ Base and publish directories are different
+- ✅ Next.js plugin can process the built files
+- ✅ All SSR and middleware features should work
+- ✅ Build should complete successfully
