@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { ClerkProvider } from '@clerk/nextjs'
+import ClientClerkProvider from '@/components/ClientClerkProvider'
 import { ToastProvider } from '@/components/Toast'
 import './globals.css'
 
@@ -14,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <ClerkProvider>
+    <ClientClerkProvider>
       <html lang="en" className="scroll-smooth">
         <head>
           <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -26,6 +26,6 @@ export default function RootLayout({
           </ToastProvider>
         </body>
       </html>
-    </ClerkProvider>
+    </ClientClerkProvider>
   )
 }

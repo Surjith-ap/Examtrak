@@ -1,9 +1,6 @@
-import { UserProfile } from '@clerk/nextjs'
+'use client'
 
-// Required for static export
-export async function generateStaticParams() {
-  return [{ 'user-profile': [] }]
-}
+import { UserProfile } from '@clerk/nextjs'
 
 export default function UserProfilePage() {
   return (

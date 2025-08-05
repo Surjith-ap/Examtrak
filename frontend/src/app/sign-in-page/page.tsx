@@ -2,7 +2,7 @@
 
 import { SignIn } from '@clerk/nextjs'
 
-export default function Page() {
+export default function SignInPage() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-warm-cream">
       <div className="w-full max-w-md">
@@ -15,10 +15,12 @@ export default function Page() {
             elements: {
               formButtonPrimary: 'bg-warm-brown hover:bg-warm-brown-dark',
               card: 'border border-warm-border shadow-lg',
-              headerTitle: 'text-warm-text',
-              headerSubtitle: 'text-warm-text-light',
+              formFieldInput: 'border-warm-border focus:border-warm-brown',
+              footerActionLink: 'text-warm-brown hover:text-warm-brown-dark'
             }
           }}
+          routing="path" 
+          path="/sign-in-page"
         />
       </div>
     </div>
